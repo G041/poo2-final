@@ -1,0 +1,233 @@
+PRIMER PDF, conceptos basicos de poo https://eva.uca.edu.ar/mod/resource/view.php?id=1557458
+
+var -> Alcance a nivel de función
+let -> Alcance a nivel de bloque
+const -> Alcance a nivel de bloque 
+
+Funciones anónimas
+Son funciones sin nombre o identidad, que pueden ser
+utilizadas para ser pasadas como parámetros o en el
+caso que se tenga que retornar una función.
+También conocidas como funciones lambda. 
+
+Funciones Flecha (Arrow Functions)
+Diferencias con las funciones clásicas:
+1. La función flecha no define su propio contexto (this)
+2. No puede ser utilizada como constructor (debido al punto 1)
+3. Poseen un return implícito si no se define un bloque con llaves.
+En la especificación del lenguaje vamos a encontrar más diferencias, pero las
+indicadas son las necesarias para el presente curso
+
+Callbacks
+Los Callbacks son funciones que se pasan como
+parámetros y van a ser utilizadas por la función.
+Al igual que en el TimeOut, podemos definir un
+parámetro donde recibimos una funcion y la invocamos.
+
+Sintaxis Spread
+La sintaxis extendida permite a un elemento iterable tal
+como un arreglo o cadena ser expandido en lugares donde
+cero o más argumentos o elementos son esperados.
+Puede ser utilizado en llamadas a función o arreglos literales
+Ej sintaxis spread:
+function sum(x, y, z) {
+return x + y + z;
+}
+const numbers = [1, 2, 3];
+console.log(sum(...numbers)); //devuelve 6
+
+Métodos para el manejo de arreglos: "conceptos basicos de poo.pdf" pag 26 https://eva.uca.edu.ar/pluginfile.php/4567290/mod_resource/content/0/Conceptos%20B%C3%A1sicos%20JavaScript.pdf
+
+foreach{El método forEach()
+ejecuta la función
+indicada una vez
+por cada elemento
+del array.}
+
+map{El método map()
+crea un nuevo array
+con los resultados
+de la llamada a la
+función indicada
+aplicados a cada
+uno de sus
+elementos.}
+
+filter{El método filter()
+crea un nuevo array
+con todos los
+elementos que
+cumplan la
+condición
+implementada por la
+función dada.
+}
+
+includes{El método includes()
+determina si una
+matriz incluye un
+determinado
+elemento, devuelve
+true o false según
+corresponda.}
+
+concat{El método concat()
+se usa para unir dos
+o más arrays. Este
+método no cambia
+los arrays
+existentes, sino que
+devuelve un nuevo
+array.}
+
+find{El método find()
+devuelve el valor
+del primer elemento
+del array que
+cumple la función
+de prueba
+proporcionada.}
+
+findindex{El método findIndex()
+devuelve el índice del
+primer elemento de
+un array que cumpla
+con la función de
+prueba
+proporcionada. En
+caso contrario
+devuelve -1.}
+
+indexOf{El método indexOf()
+retorna el primer
+índice en el que se
+puede encontrar un
+elemento dado en el
+array, ó retorna -1 si
+el elemento no esta
+presente.}
+
+
+join{El método join() une
+todos los elementos
+de una matriz (o un
+objeto similar a una
+matriz) en una
+cadena y devuelve
+esta cadena.}
+
+pop{El método pop()
+elimina el último
+elemento de un
+array y lo devuelve.
+Este método cambia
+la longitud del array.
+}
+
+push{El método push()
+añade uno o más
+elementos al final
+de un array y
+devuelve la nueva
+longitud del array.}
+
+reduce{El método reduce()
+ejecuta una función
+reductora sobre
+cada elemento de
+un array,
+devolviendo como
+resultado un único
+valor.}
+
+shift{El método shift()
+elimina el primer
+elemento del array
+y lo retorna. Este
+método modifica la
+longitud del array.
+}
+
+slice{l método slice()
+devuelve una copia
+de una parte del array
+dentro de un nuevo
+array empezando por
+inicio hasta fin (fin no
+incluido). El array
+original no se
+modificará
+
+ej: var nombres = ['Rita', 'Pedro',
+'Miguel', 'Ana', 'Vanesa'];
+var masculinos = nombres.slice(1, 3);
+// ['Pedro','Miguel']}
+
+splice{El método splice()
+cambia el contenido
+de un array
+eliminando
+elementos
+existentes y/o
+agregando nuevos
+elementos.
+
+const months = ['Jan', 'March',
+'April', 'June'];
+months.splice(1, 0, 'Feb');
+// Array ["Jan", "Feb", "March",
+"April", "June"]
+months.splice(4, 1, 'May');
+// Array ["Jan", "Feb", "March",
+"April", "May"]
+}
+
+sort{El método sort()
+ordena los
+elementos de un
+arreglo (array)
+localmente y
+devuelve el arreglo
+ordenado.
+
+valores.sort((a,b)=> a - b);
+}
+
+TERCER PDF: CLASES EN JS 
+https://eva.uca.edu.ar/pluginfile.php/4567481/mod_resource/content/0/Clases%20en%20JavaScript.pdf
+
+1. Definición de clases
+2. Creación de objetos
+3. Metodos
+4. Propiedades/métodos privados
+5. Propiedades/métodos estáticos
+6. Definición de sub-clase (herencia)
+7. Polimorfismo
+
+una poronga este pdf, olvidafter
+
+CUARTO PDF: Prototipos https://eva.uca.edu.ar/pluginfile.php/4574634/mod_resource/content/0/Prototipos.pdf
+
+Prototipos
+● Creación de objetos sin definición de clases
+(Literales, Constructores y Clonación)
+● El objeto Object
+● Propiedades de Objetos (Propiedades enumerables,
+Constructor, Prototipo y mutación)
+
+Prototipos (Definicion)
+Un objeto prototipo es un objeto que actúa como un objeto plantilla
+que hereda métodos y propiedades.
+Un objeto prototipo del objeto puede tener a su vez otro objeto
+prototipo, el cual hereda métodos y propiedades, y así sucesivamente.
+Esto es conocido con frecuencia como la cadena de prototipos, y
+explica por qué objetos diferentes pueden tener disponibles
+propiedades y métodos definidos en otros objetos.
+
+Objetos Literales
+var javier = {
+nombre: “Javier”,
+Apellido: “Baez”
+fechaNacimiento: new Date(1998, 6,
+15)
+}

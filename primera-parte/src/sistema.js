@@ -1,0 +1,137 @@
+"use strict";
+const PaqueteCliente = require("./paqueteCliente");
+
+
+const Sistema = function(paquetesDisponibles, clientes, cuentas, fechaActual){ //estos van a ser arreglos de objetos y no identificadores, el sistema conoce todo => singleton
+    this.paquetes = paquetesDisponibles;
+    this.clientes = clientes;
+    this.cuentas = cuentas;
+    this.fechaActual = fechaActual;
+
+    this.clienteActual = null;          //Cliente
+    this.cuentaClienteActual = null;    //Cuenta
+    this.paquetesClienteActual = null;  //[Paquete]
+    this.paqueteClienteActual = null;   //Paquete
+
+    this.depositar = function(valor){
+        this.cuentaClienteActual.depositar(valor);
+    }
+
+    this.consultarConsumos = function(){
+        this.validarSesionIniciada();
+        const consumos = this.paquetesClienteActual.map(paquete => paquete.obtenerConsumos());
+        //const consumos = this.clienteActual.conocerPaquetes().map(paquete => paquete.obtenerConsumos()); //esto tambien anda correctamente
+
+        return consumos.flat();    //aplanamos la lista de listas un nivel de profundidad 
+    }
+
+    this.activarRenovarAutomaticamente = function(){
+        this.validarSesionIniciada();
+        this.paqueteClienteActual.activarRenovarAutomaticamente();
+    }
+
+    this.realizarConsumo = function(consumo){
+        this.validarSesionIniciada();
+        try{
+            this.validarQueNoHayaPaqueteEnCurso(); //si pasa esta linea o tiene un paquete terminado o vacio
+            this.validarQueNoHayaRenovacion();
+            throw new Error("El cliente no tiene ningun paquete valido en curso ni renovable, no puede realizar consumos");
+        }catch(error){
+            if(error.message === "El cliente ya tiene un paquete valido en curso"){
+                this.paqueteVigente.realizarConsumo(consumo);
+            }else if(error.message === "El cliente tiene un paquete renovable"){
+                this.comprarPaquete(this.paqueteClienteActual);
+                this.realizarConsumo(consumo);
+            }
+        }
+    }
+
+    this.validarQueNoHayaRenovacion = function(){
+        if(this.paqueteVigente.sosRenovable())
+            throw new Error("El cliente tiene un paquete renovable");
+    }
+
+    this.consultarSaldo = function(){
+        this.validarSesionIniciada();
+        return this.cuentaClienteActual.obtenerSaldo();
+    }
+
+    this.iniciarSesion = function(cliente){
+        this.existeElCliente(cliente);
+        this.existeCuentaCliente(cliente);
+
+        //cargamos todas las variabels que nos van a servir
+        this.clienteActual = cliente;
+        this.paquetesClienteActual = cliente.conocerPaquetes();
+        this.cuentaClienteActual = this.cuentas.find(cuenta => cuenta.es(this.clienteActual));
+
+        this.paqueteClienteActual = this.paquetesClienteActual.at(-1);
+    }
+
+    this.existeElCliente = function(clientePorVerificar){
+        const clienteActual = this.clientes.find(cliente => cliente.sosIgual(clientePorVerificar));
+        if(!clienteActual)
+            throw new Error("El cliente no existe en el sistema");
+
+    }
+
+    this.existeCuentaCliente = function(clientePorVerificar){
+        const cuentaCliente = this.cuentas.find(cuenta => cuenta.es(clientePorVerificar));
+        if(!cuentaCliente)
+            throw new Error("El cliente no tiene cuenta en el sistema");
+    }
+
+    this.cerrarSesion = function(){
+        this.clienteActual = null;
+        this.cuentaClienteActual = null;
+        this.paqueteVigente = null;
+        this.paquetesClienteActual = null;
+    }
+
+    this.comprarPaquete = function(paquetePedido){
+        this.validarSesionIniciada();
+
+        const paqueteEncontrado = this.paquetes.find(paquete => paquete.es(paquetePedido));
+        
+        this.existeElPaquete(paqueteEncontrado);
+        this.validarQueNoHayaPaqueteEnCurso();
+
+        this.saldoSuficiente(paqueteEncontrado.obtenerCosto());
+        this.otorgarPaquete(paqueteEncontrado);
+    }
+
+    this.validarSesionIniciada = function(){
+        if(!this.clienteActual)
+            throw new Error("Primero debes de iniciar sesion")
+    }
+
+    this.existeElPaquete = function(paqueteEncontrado){
+        if(!paqueteEncontrado)
+            throw new Error("El paquete no existe")
+    }
+
+    this.validarQueNoHayaPaqueteEnCurso = function(){
+        const ultimoPaquete = this.paquetesClienteActual.at(-1); //por definicion el ultimo paquete del arreglo siempre sera el mas propenso a estar vigente
+        
+        if(ultimoPaquete.es(ultimoPaquete) && ultimoPaquete.estaVigente()){//evaluamos que sea distinto de undefined para clientes que todavia no tienen paquetes (arreglo de paquetes vacio)
+            this.paqueteVigente = ultimoPaquete;
+            throw new Error("El cliente ya tiene un paquete valido en curso");
+        }//o no tiene un paquete vigente o tiene un paq vacio
+    }
+
+    
+
+    this.saldoSuficiente = function(valor){
+        if(this.cuentaClienteActual.obtenerSaldo() < valor)
+            throw new Error("El cliente no tiene saldo suficiente para ese paquete")
+        this.cuentaClienteActual.depositar(-valor);
+    }
+
+    this.otorgarPaquete = function(paqueteEncontrado){
+        const numeroCliente = this.clienteActual.obtenerNumero();
+        this.paqueteClienteActual = new PaqueteCliente(paqueteEncontrado, numeroCliente);
+        this.clienteActual.recibirPaquete(this.paqueteClienteActual); //cuando el cliente pudo comprar un paquete se realiza la asignacion paqueteCliente
+    }
+};
+
+module.exports = Sistema;

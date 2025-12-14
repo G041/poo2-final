@@ -1,0 +1,24 @@
+FALTA EL ATRIBUTO DE RENOVACION AUTOMATICA DE UN PAQUETE
+
+cliente{
+nombre
+apellido
+numero linea
+paquete
+cuenta prepaga {saldo}
+}
+paquete{
+canti de dtaos moviles (gb)
+cant tiempo para llamadas (minutos)
+duracion (dias)
+costo(pesos)
+}
+paquete vacio
+paquete cliente
+
+consumo{
+fecha/hora de inicio/fin 
+
+consumo internet{cant_mb}
+consumo de minutos{cant_minutos}
+}
