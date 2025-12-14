@@ -251,7 +251,7 @@ describe("Verificamos la compra de paquetes", ()=>{
     });
 
 });
-describe("Testeamos los consumos de internet", ()=>{
+describe("Testeamos los consumos de internet", ()=>{ //NOTA ya estan ordenandos por fecha
 
     test("Verificamos que la factory de consumos funcione correctamente", ()=>{
         const fechaInicio = new Date(2001, 8, 11, 9, 40); //new Date(año, mes, día, hora, minuto, segundo, milisegundo)
@@ -418,7 +418,7 @@ describe("Testeamos los consumos de internet", ()=>{
         sistema.realizarConsumo(consumoI);  //consumimos nuevamente
         sistema.realizarConsumo(consumoM);  //consumimos nuevamente
 
-        expect(sistema.consultarConsumos()).toStrictEqual([consumoI, consumoM, consumoI, consumoM]);
+        expect(sistema.consultarConsumos()).toStrictEqual([consumoI,consumoM, consumoI, consumoM]); //como la fecha en ambos consumos es la misma, estan ordenados por entrada, en definitiva no fueron ordenados
         expect((pepe.conocerPaquetes()[0]).obtenerDatos()).toStrictEqual(0); 
         expect((pepe.conocerPaquetes()[0]).obtenerMinutos()).toStrictEqual(0);
 
@@ -484,4 +484,33 @@ describe("Testeamos la fecha sobre los paquetes", ()=>{
         expect(pepe.conocerPaquetes()).toStrictEqual([paqueteViejo, paquetePepe]); 
         
     });
+})
+describe("Testeamos el filtro de fecha sobre los consumos", ()=>{ //nota, los consumos de los test anteriores ya estaban ordenados por fecha
+    test("Al realizar dos consumos de Internet por parte de un cliente y revisar la lista de consumos, estos estan ordenados correctamente", ()=>{
+        const fechaInicio1 = new Date(2001, 8, 11, 9, 40); //new Date(año, mes, día, hora, minuto, segundo, milisegundo)
+        const fechaFin1 = new Date(2001, 8, 11, 9, 50);
+
+        const fechaInicio2 = new Date(2000, 8, 11, 9, 40);  //cambia el anio, el consumo es mas viejo
+        const fechaFin2 = new Date(2000, 8, 11, 9, 50);     //cambia el anio, el consumo es mas viejo
+
+
+        const paquete = crearPaquete(2.5, 1000, 30, 400); //gb-minutos-dias-costo
+        const paqueteCliente = crearPaqueteCliente(crearPaquete(2.5, 1000, 30, 400), 1111111111)
+
+        const pepe = crearCliente("Juan Alberto", "Pepe", 1111111111, [paqueteCliente]); 
+        const cuenta = crearCuenta(1111111111, 0); 
+
+        const sistema = crearSistema([paquete], [pepe], [cuenta]);
+
+        const consumo1 = crearConsumo("inTeRneT", fechaInicio1, fechaFin1, 0.300);
+        const consumo2 = crearConsumo("inTeRneT", fechaInicio2, fechaFin2, 0.300);
+
+        sistema.iniciarSesion(pepe);
+        sistema.realizarConsumo(consumo1);
+        sistema.realizarConsumo(consumo2);
+
+        expect(sistema.consultarConsumos()).toStrictEqual([consumo2, consumo1]);    //realizamos primero el 1 y despues el 2 y aun asi estan ordenados de manera que el 2 es mas antiguo
+    });
+
+
 })

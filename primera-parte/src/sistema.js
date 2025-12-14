@@ -19,10 +19,14 @@ const Sistema = function(paquetesDisponibles, clientes, cuentas, fechaActual){ /
 
     this.consultarConsumos = function(){
         this.validarSesionIniciada();
-        const consumos = this.paquetesClienteActual.map(paquete => paquete.obtenerConsumos());
-        //const consumos = this.clienteActual.conocerPaquetes().map(paquete => paquete.obtenerConsumos()); //esto tambien anda correctamente
+        const listaConsumos = this.paquetesClienteActual.map(paquete => paquete.obtenerConsumos()); //esta es una lista de listas = [[consumo1, consumo2], [consumo1, consumo2]]
 
-        return consumos.flat();    //aplanamos la lista de listas un nivel de profundidad 
+        const consumos = listaConsumos.flat() //aplanamos la lista de listas un nivel de profundidad 
+
+        consumos.sort((a, b) => {
+            return (a.obtenerFechaInicio()).getTime() - (b.obtenerFechaInicio()).getTime();
+        });
+        return consumos;
     }
 
     this.activarRenovarAutomaticamente = function(){
