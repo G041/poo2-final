@@ -1,8 +1,11 @@
 "use strict";
-const {crearCliente, crearPaquete, crearCuenta, crearSistema, crearConsumo, crearPaqueteCliente, crearFiltroFecha} = require("./factories");
+const {crearCliente, crearPaquete, crearCuenta, crearSistema, crearConsumo, crearPaqueteCliente, crearPrestamo} = require("./factories");
 const ConsumoInternet = require("../src/consumoInternet");
 const ConsumoMinutos = require("../src/consumoMinutos");
 const PaqueteCliente = require("../src/paqueteCliente");
+const PrestamoDatos = require("../src/prestamoDatos");
+const PrestamoMinutos = require("../src/prestamoMinutos");
+
 
 describe("Verificamos que ande correctamente la creacion de consumos por parte de aplicaciones", ()=>{
 
@@ -44,6 +47,17 @@ describe("Verificamos que ande correctamente la creacion de consumos por parte d
     }) //no hay mucho mas que testear si anda todo lo anterior )?
 });
 describe("Testeamos los prestamos de datos y/o minutos por parte de los clientes", ()=>{
+
+    test("Al crear un prestamo de datos y uno de minutos estos se instancian de manera correcta gracias a la factory", ()=>{
+
+        const prestamoDatos = crearPrestamo("dAtOs", 1);
+        const prestamoMinutos = crearPrestamo("mInUtOs", 1);
+
+
+        expect(prestamoDatos).toBeInstanceOf(PrestamoDatos);
+        expect(prestamoMinutos).toBeInstanceOf(PrestamoMinutos);
+
+    })
     test("Tenemos dos clientes, el primero Fede le presta al segundo Fran y este obtiene datos y minutos", ()=>{
         const paqueteFede = crearPaqueteCliente(crearPaquete(2.5,1000,30,400,1)) //cantDatosMoviles, cantTiempoLlamadas, duracion, costo, idPaquete = 0, appIlimitada = ""
         const paqueteFran = crearPaqueteCliente(crearPaquete(0,0,30,400,1)) 
@@ -56,8 +70,10 @@ describe("Testeamos los prestamos de datos y/o minutos por parte de los clientes
 
         const sistema = crearSistema([], [fede, fran], [cuentaFede, cuentaFran]);
 
+        const prestamoDatos = crearPrestamo("dAtOs", 1);
+
         sistema.iniciarSesion(fede);
-        sistema.prestarDatos(fran, 1);
+        sistema.realizarPrestamo(fran, prestamoDatos);
         sistema.cerrarSesion();
 
         sistema.iniciarSesion(fran);
@@ -66,7 +82,7 @@ describe("Testeamos los prestamos de datos y/o minutos por parte de los clientes
     })
 
     test("Tenemos dos clientes, el primero le intenta prestar al segundo pero no tiene suficiente", ()=>{
-        const paqueteFede = crearPaqueteCliente(crearPaquete(2.5,1000,30,400,1)) //cantDatosMoviles, cantTiempoLlamadas, duracion, costo, idPaquete = 0, appIlimitada = ""
+        const paqueteFede = crearPaqueteCliente(crearPaquete(2.5,10,30,400,1)) //cantDatosMoviles, minutos, duracion, costo, idPaquete = 0, appIlimitada = ""
         const paqueteFran = crearPaqueteCliente(crearPaquete(0,0,30,400,1)) 
         
         const fede = crearCliente("Juan Alberto", "Pepe", 1111111111, [paqueteFede]); //def paquetes = [new PaqueteVacio()]
@@ -77,9 +93,14 @@ describe("Testeamos los prestamos de datos y/o minutos por parte de los clientes
 
         const sistema = crearSistema([], [fede, fran], [cuentaFede, cuentaFran]);
 
+        const prestamoDatos = crearPrestamo("dAtOs", 10)
+        const prestamoMinutos = crearPrestamo("mInuToS", 20)
+
         sistema.iniciarSesion(fede);
         
-        expect(() => sistema.prestarDatos(fran, 10)).toThrow(new Error("Estas intentando prestar una cantidad mayor a la que tenes"));
+        expect(() => sistema.realizarPrestamo(fran, prestamoDatos)).toThrow(new Error("Estas intentando prestar una cantidad de datos mayor a la que tenes"));
+        expect(() => sistema.realizarPrestamo(fran, prestamoMinutos)).toThrow(new Error("Estas intentando prestar una cantidad de minutos mayor a la que tenes"));
+
 
     });
     test("Tenemos dos clientes, el primero le intenta prestar al segundo pero este ya tiene un paquete vigente en curso", ()=>{
@@ -95,9 +116,17 @@ describe("Testeamos los prestamos de datos y/o minutos por parte de los clientes
         const sistema = crearSistema([], [fede, fran], [cuentaFede, cuentaFran]);
 
         sistema.iniciarSesion(fede);
+        const prestamoDatos = crearPrestamo("dAtOs", 10)
+        const prestamoMinutos = crearPrestamo("mInuToS", 20)
+
         
-        expect(() => sistema.prestarDatos(fran, 1)).toThrow(new Error("El recepetor ya tiene un paquete en curso, no necesita ningun prestamo"));
+        expect(() => sistema.realizarPrestamo(fran, prestamoDatos)).toThrow(new Error("El recepetor ya tiene un paquete en curso, no necesita ningun prestamo"));
         expect(fede.conocerPaquetes()[0].obtenerDatos()).toBe(2.5); //los datos del paquete de fede no se modifican
+        expect(fran.conocerPaquetes()[0].obtenerDatos()).toBe(1); //los datos del paquete de fede no se modifican
+
+        expect(() => sistema.realizarPrestamo(fran, prestamoMinutos)).toThrow(new Error("El recepetor ya tiene un paquete en curso, no necesita ningun prestamo"));
+        expect(fede.conocerPaquetes()[0].obtenerDatos()).toBe(2.5); //los datos del paquete de fede no se modifican
+        expect(fran.conocerPaquetes()[0].obtenerDatos()).toBe(1); //los datos del paquete de fede no se modifican
     });
     
 })

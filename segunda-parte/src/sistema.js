@@ -14,8 +14,8 @@ const Sistema = function(paquetesDisponibles, clientes, cuentas){ //estos van a 
     this.paquetesClienteActual = null;  //[Paquete]
     this.paqueteClienteActual = null;   //Paquete
 
-    //METODOS DE LA SEGUNDA ITERACION\
-    this.prestarDatos = function(receptor, cantidadAPrestar){
+//METODOS DE LA SEGUNDA ITERACION
+    this.realizarPrestamo = function(receptor, prestamo){
         this.validarSesionIniciada();
 
         this.existeElCliente(receptor);
@@ -24,23 +24,23 @@ const Sistema = function(paquetesDisponibles, clientes, cuentas){ //estos van a 
         const paqueteReceptor = this.puedeRecibir(receptor);
 
 
-        this.tengoDatosParaPrestar(cantidadAPrestar);
-        this.otorgarDatos(paqueteReceptor, cantidadAPrestar);
+        this.tengoParaPrestar(prestamo);
+        this.otorgarPrestamo(paqueteReceptor, prestamo);
     }
 
     //this.prestarMinutos = function(){} //no la hago ya que el prestamo va a pasar a ser un objeto
 
-    this.otorgarDatos = function(paqueteReceptor, cantidadAPrestar){
-        this.paqueteClienteActual.consumirDatos(cantidadAPrestar);
-        paqueteReceptor.consumirDatos(-cantidadAPrestar); //negativo ya que consumir datos es una resta
+    this.otorgarPrestamo = function(paqueteReceptor, prestamo){
+        const paqueteClienteActual = this.paqueteClienteActual;
+
+        paqueteClienteActual.entregarPrestamo(prestamo);
+        paqueteReceptor.recibirPrestamo(prestamo); //negativo ya que consumir datos es una resta
     }
 
-    this.tengoDatosParaPrestar = function(cantidadAPrestar){
-        if(this.paqueteClienteActual.obtenerDatos() < cantidadAPrestar){
-            throw new Error ("Estas intentando prestar una cantidad mayor a la que tenes");
-        }
+    this.tengoParaPrestar = function(prestamo){
+        const paqueteCliente = this.paqueteClienteActual;
+        prestamo.tieneSuficiente(paqueteCliente);
     }
-
 
     this.puedeRecibir = function(receptor){
         const ultimoPaqueteReceptor = (receptor.conocerPaquetes()).at(-1); //los paquetes del receptor en -1 son el ultimo paq
@@ -50,7 +50,7 @@ const Sistema = function(paquetesDisponibles, clientes, cuentas){ //estos van a 
         }
         return ultimoPaqueteReceptor;
     }
-    //METODOS DE LA SEGUNDA ITERACION
+//METODOS DE LA SEGUNDA ITERACION
 
     this.depositar = function(valor){
         this.cuentaClienteActual.depositar(valor);
@@ -106,7 +106,6 @@ const Sistema = function(paquetesDisponibles, clientes, cuentas){ //estos van a 
         this.clienteActual = cliente;
         this.paquetesClienteActual = cliente.conocerPaquetes();
         this.cuentaClienteActual = this.cuentas.find(cuenta => cuenta.es(this.clienteActual));
-
         this.paqueteClienteActual = this.paquetesClienteActual.at(-1);
     }
 

@@ -12,11 +12,15 @@ const ConsumoMinutos = require("../src/consumoMinutos");
 
 const FiltroFecha = require("../src/filtroFecha");
 
+const PrestamoDatos = require("../src/prestamoDatos");
+const PrestamoMinutos = require("../src/prestamoMinutos");
+
+
 const crearCliente = function (nombre, apellido, numeroLinea, paquetes = [new PaqueteVacio()]) {
     return new Cliente(nombre, apellido, numeroLinea, paquetes);
 }
 
-const crearPaquete = function (cantDatosMoviles, cantTiempoLlamadas, duracion, costo, idPaquete = 0, appIlimitada = "NINGUNA"){
+const crearPaquete = function (cantDatosMoviles, cantTiempoLlamadas, duracion, costo, idPaquete = 0, appIlimitada = "no hay appIlimitada"){
     return new Paquete(cantDatosMoviles, cantTiempoLlamadas, duracion, costo, idPaquete, appIlimitada);
 }
 
@@ -31,7 +35,7 @@ const crearSistema = function(paquetesDisponibles, clientes, cuentas){
     return new Sistema(paquetesDisponibles, clientes, cuentas);
 }
 
-const crearConsumo = function(tipo, fechaInicio, fechaFin, cantidadConsumida, app = "NINGUNO"){
+const crearConsumo = function(tipo, fechaInicio, fechaFin, cantidadConsumida, app = null){
     
     switch(tipo.toLowerCase()){
         case "internet":
@@ -40,6 +44,17 @@ const crearConsumo = function(tipo, fechaInicio, fechaFin, cantidadConsumida, ap
             return new ConsumoMinutos(fechaInicio, fechaFin, cantidadConsumida);
         default:
             throw new Error("Tipo de consumo desconocido");
+    }
+}
+
+const crearPrestamo = function(tipo, cantidad){
+    switch (tipo.toLowerCase()) {
+        case "datos":
+            return new PrestamoDatos(cantidad)
+        case "minutos":
+            return new PrestamoMinutos(cantidad)
+        default:
+            throw new Error("Tipo de prestamo desconocido");
     }
 }
 
@@ -55,5 +70,6 @@ module.exports = {
     crearCuenta: crearCuenta,
     crearSistema: crearSistema,
     crearConsumo: crearConsumo,
-    crearFiltroFecha
+    crearFiltroFecha: crearFiltroFecha,
+    crearPrestamo: crearPrestamo
 }
