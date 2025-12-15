@@ -1,17 +1,15 @@
 "use strict";
 
-const Paquete = function(cantDatosMoviles, cantTiempoLlamadas, duracion, costo, idPaquete, fechaCompra){
+const Paquete = function(cantDatosMoviles, cantTiempoLlamadas, duracion, costo, idPaquete){
     this.cantDatosMoviles = cantDatosMoviles;
     this.cantTiempoLlamadas = cantTiempoLlamadas;
     this.duracion = duracion;
     this.costo = costo;
     this.idPaquete = idPaquete;
-    //this.fechaVencimiento = this.calcularFechaVencimiento(fechaCompra, this.duracion);
 
     if (costo < 0){
         throw new Error("No se puede crear un paquete con costo negativo");
     }
-
 };
     
 Paquete.prototype.es = function(paquete){ 

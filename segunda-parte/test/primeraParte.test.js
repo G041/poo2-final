@@ -234,6 +234,7 @@ describe("Verificamos la compra de paquetes", ()=>{
 
         expect(pepe.conocerPaquetes()).toEqual([paqueteClienteA, paqueteClienteB]); //durante la compra se realizo correctamente la relacion entre el paquete y cliente
         //al comprar paqueteB pasa a ser paqueteClienteB
+        //este test podria fallar por el manejo del objeto Date();
     });
 
     test("Creamos un cliente con saldo suficiente y un paquete terminado, intenta comprar un segundo paquete pero no tiene saldo ", ()=>{

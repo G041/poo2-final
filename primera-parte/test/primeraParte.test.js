@@ -167,7 +167,7 @@ describe("Verificamos la compra de paquetes", ()=>{
         const cuenta = crearCuenta(1111111111, 400); //saldo def = 0
         const paquete = crearPaquete(2.5, 1000, 30, 400);
         
-        const paquetePepe = crearPaqueteCliente(paquete, 1111111111) //un paquete que esta relacionado estrictamente con el cliente pepe, solo con proposito de testeo
+        const paquetePepe = crearPaqueteCliente(paquete, 1111111111, fechaCompraPaquete) //un paquete que esta relacionado estrictamente con el cliente pepe, solo con proposito de testeo
 
         const sistema = crearSistema([paquete], [pepe], [cuenta]);
 

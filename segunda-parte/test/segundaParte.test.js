@@ -79,7 +79,27 @@ describe("Testeamos los prestamos de datos y/o minutos por parte de los clientes
         sistema.iniciarSesion(fran);
         expect((fran.conocerPaquetes()[0]).obtenerDatos()).toBe(1);
 
-    })
+    });
+
+    test("Al hacer un prestamo de cualquier tipo, no se puede hacer un prestamo inmediatamente despues ya que pone al paquete del receptor en vigencia", ()=>{
+        const paqueteFede = crearPaqueteCliente(crearPaquete(2.5,1000,30,400,1)) //cantDatosMoviles, cantTiempoLlamadas, duracion, costo, idPaquete = 0, appIlimitada = ""
+        const paqueteFran = crearPaqueteCliente(crearPaquete(0,0,30,400,1)) 
+        
+        const fede = crearCliente("Juan Alberto", "Pepe", 1111111111, [paqueteFede]); //def paquetes = [new PaqueteVacio()]
+        const fran = crearCliente("Juan Alberto", "Pepe", 2222222222, [paqueteFran]); //def paquetes = [new PaqueteVacio()]
+
+        const cuentaFede = crearCuenta(1111111111, 800); 
+        const cuentaFran = crearCuenta(2222222222, 800); 
+
+        const sistema = crearSistema([], [fede, fran], [cuentaFede, cuentaFran]);
+
+        const prestamoDatos = crearPrestamo("dAtOs", 1);
+
+        sistema.iniciarSesion(fede);
+        sistema.realizarPrestamo(fran, prestamoDatos);
+        expect(() => sistema.realizarPrestamo(fran, prestamoDatos)).toThrow(new Error("El recepetor ya tiene un paquete en curso, no necesita ningun prestamo"));
+
+    });
 
     test("Tenemos dos clientes, el primero le intenta prestar al segundo pero no tiene suficiente", ()=>{
         const paqueteFede = crearPaqueteCliente(crearPaquete(2.5,10,30,400,1)) //cantDatosMoviles, minutos, duracion, costo, idPaquete = 0, appIlimitada = ""

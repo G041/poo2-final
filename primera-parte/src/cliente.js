@@ -8,7 +8,7 @@ const Cliente = function(nombre, apellido, numeroLinea, paquetes){
 };
 
 Cliente.prototype.sos = function(numCliente) {
-    return ( numCliente === this.numeroLinea );
+    return ( numCliente === this.numeroLinea ); 
 };
 
 Cliente.prototype.obtenerNumero = function() {
@@ -17,7 +17,7 @@ Cliente.prototype.obtenerNumero = function() {
 
 // Método mejorado para usar el getter del objeto recibido
 Cliente.prototype.sosIgual = function(cliente) {
-    return this.numeroLinea == cliente.obtenerNumero();
+    return this == cliente;
 };
 
 Cliente.prototype.recibirPaquete = function(paquete) {
