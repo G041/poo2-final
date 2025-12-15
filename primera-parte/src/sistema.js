@@ -1,5 +1,6 @@
 "use strict";
 const PaqueteCliente = require("./paqueteCliente");
+const FiltroNormal = require("./filtroNormal");
 
 
 const Sistema = function(paquetesDisponibles, clientes, cuentas, fechaActual){ //estos van a ser arreglos de objetos y no identificadores, el sistema conoce todo => singleton
@@ -17,18 +18,24 @@ const Sistema = function(paquetesDisponibles, clientes, cuentas, fechaActual){ /
         this.cuentaClienteActual.depositar(valor);
     }
 
-    this.consultarConsumos = function(){
+    this.consultarConsumos = function(filtroAplicable = FiltroNormal){ //si no obtiene un filtro por parametro, accede al metodo estatico de la clase FiltroNormal.aplicar()
         this.validarSesionIniciada();
         const listaConsumos = this.paquetesClienteActual.map(paquete => paquete.obtenerConsumos()); //esta es una lista de listas = [[consumo1, consumo2], [consumo1, consumo2]]
-
         const consumos = listaConsumos.flat() //aplanamos la lista de listas un nivel de profundidad 
 
+        filtroAplicable.aplicar(consumos);
+
+        return consumos;
+    }
+    /*
+    this.filtrarConsumos = function(consumos, fechaInicio = null, fechaFin = null){ //esto podria ser un objeto filtro a fin de eliminar if pero estoy cansado de este tp
+        if(fechaInicio && fechaFin)
+            this.filtrarPorFecha(fechaInicio, fechaFin)
         consumos.sort((a, b) => {
             return (a.obtenerFechaInicio()).getTime() - (b.obtenerFechaInicio()).getTime();
         });
-        return consumos;
-    }
-
+    } 
+    */
     this.activarRenovarAutomaticamente = function(){
         this.validarSesionIniciada();
         this.paqueteClienteActual.activarRenovarAutomaticamente();

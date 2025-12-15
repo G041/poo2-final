@@ -1,5 +1,5 @@
 "use strict";
-const {crearCliente, crearPaquete, crearCuenta, crearSistema, crearConsumo, crearPaqueteCliente} = require("./factories");
+const {crearCliente, crearPaquete, crearCuenta, crearSistema, crearConsumo, crearPaqueteCliente, crearFiltroFecha} = require("./factories");
 const ConsumoInternet = require("../src/consumoInternet");
 const ConsumoMinutos = require("../src/consumoMinutos");
 const PaqueteCliente = require("../src/paqueteCliente");
@@ -510,6 +510,49 @@ describe("Testeamos el filtro de fecha sobre los consumos", ()=>{ //nota, los co
         sistema.realizarConsumo(consumo2);
 
         expect(sistema.consultarConsumos()).toStrictEqual([consumo2, consumo1]);    //realizamos primero el 1 y despues el 2 y aun asi estan ordenados de manera que el 2 es mas antiguo
+    });
+
+    test("Al realizar muchos consumos y pedir que se aplique nuestro filtro por fecha, nos devuelve solo aquellos realizados durante el intervalo pedido", ()=>{
+
+        const consumo1 = crearConsumo("internet", new Date(2001,8,11,9,40), new Date(2001,8,11,9,41), 0.1);
+        const consumo2 = crearConsumo("internet", new Date(2001,8,11,9,42), new Date(2001,8,11,9,43), 0.1);
+        const consumo3 = crearConsumo("internet", new Date(2001,8,11,9,44), new Date(2001,8,11,9,45), 0.1);
+        const consumo4 = crearConsumo("internet", new Date(2001,8,11,9,46), new Date(2001,8,11,9,47), 0.1);
+        const consumo5 = crearConsumo("internet", new Date(2001,8,11,9,48), new Date(2001,8,11,9,49), 0.1);
+        const consumo6 = crearConsumo("internet", new Date(2001,8,11,9,50), new Date(2001,8,11,9,51), 0.1);
+        const consumo7 = crearConsumo("internet", new Date(2001,8,11,9,52), new Date(2001,8,11,9,53), 0.1);
+        const consumo8 = crearConsumo("internet", new Date(2001,8,11,9,54), new Date(2001,8,11,9,55), 0.1);
+        const consumo9 = crearConsumo("internet", new Date(2001,8,11,9,56), new Date(2001,8,11,9,57), 0.1);
+        const consumo10 = crearConsumo("internet", new Date(2001,8,11,9,58), new Date(2001,8,11,9,59), 0.1);
+        //todo esto se puede escribir bastante rapido si usas la ruedita del mouse, no es ia
+
+        const paquete = crearPaquete(2.5, 1000, 30, 400); //gb-minutos-dias-costo
+        const paqueteCliente = crearPaqueteCliente(crearPaquete(2.5, 1000, 30, 400), 1111111111)
+
+        const pepe = crearCliente("Juan Alberto", "Pepe", 1111111111, [paqueteCliente]); 
+        const cuenta = crearCuenta(1111111111, 0); 
+
+        const sistema = crearSistema([paquete], [pepe], [cuenta]);
+
+        sistema.iniciarSesion(pepe);
+        sistema.realizarConsumo(consumo1);
+        sistema.realizarConsumo(consumo2);
+        sistema.realizarConsumo(consumo3)
+        sistema.realizarConsumo(consumo4)
+        sistema.realizarConsumo(consumo5)
+        sistema.realizarConsumo(consumo6)
+        sistema.realizarConsumo(consumo7)
+        sistema.realizarConsumo(consumo8)
+        sistema.realizarConsumo(consumo9)
+        sistema.realizarConsumo(consumo10)
+
+        const filtro = crearFiltroFecha(new Date(2001,8,11,9,46), new Date(2001,8,11,9,55));
+
+        sistema.consultarConsumos(filtro);
+
+        expect(sistema.consultarConsumos(filtro)).toStrictEqual([consumo4, consumo5, consumo6, consumo7, consumo8]);
+
+
     });
 
 

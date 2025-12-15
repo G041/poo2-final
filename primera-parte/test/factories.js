@@ -10,6 +10,7 @@ const Sistema = require("../src/sistema");
 const ConsumoInternet = require("../src/consumoInternet");
 const ConsumoMinutos = require("../src/consumoMinutos");
 
+const FiltroFecha = require("../src/filtroFecha");
 
 const crearCliente = function (nombre, apellido, numeroLinea, paquetes = [new PaqueteVacio()]) {
     return new Cliente(nombre, apellido, numeroLinea, paquetes);
@@ -42,6 +43,10 @@ const crearConsumo = function(tipo, fechaInicio, fechaFin, cantidadConsumida){
     }
 }
 
+const crearFiltroFecha = function(fechaInicio, fechaFin){
+    return new FiltroFecha(fechaInicio, fechaFin);
+}
+
 
 module.exports = {
     crearCliente: crearCliente,
@@ -49,5 +54,6 @@ module.exports = {
     crearPaqueteCliente: crearPaqueteCliente,
     crearCuenta: crearCuenta,
     crearSistema: crearSistema,
-    crearConsumo: crearConsumo
+    crearConsumo: crearConsumo,
+    crearFiltroFecha
 }

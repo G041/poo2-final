@@ -37,26 +37,6 @@ Paquete.prototype.obtenerCosto = function(){
     return this.costo;
 };
 
-/*
-//ESTAS DOS FUNCIONES HABRIA QUE INTENTAR SACARLAS DE ACA O ALGO PARA QUE EXISTA DIFERENCIA REAL ENTRE UN PAQUETE Y UN PAQ CLIENTE
-Paquete.prototype.realizarConsumo = function(consumo){
-    consumo.realizarConsumo(this);
-
-    this.consumos.push(consumo);
-};
-Paquete.prototype.consumirDatos = function(cantidadMb){
-    this.cantDatosMoviles -= cantidadMb;
-};
-
-Paquete.prototype.activarRenovarAutomaticamente = function(){
-    this.renovarAutomaticamente = true;
-}
-Paquete.prototype.sosRenovable = function(){
-    return this.renovarAutomaticamente;
-}
-//ESTAS DOS FUNCIONES HABRIA QUE INTENTAR SACARLAS DE ACA O ALGO PARA QUE EXISTA DIFERENCIA REAL ENTRE UN PAQUETE Y UN PAQ CLIENTE
-*/
-
 Paquete.prototype.estaVigente = function(){ ///seria logico en breves cambiar esto ya que un paquete padre siempre esta vigente, el que puede variar en cuanto a vigencia es el paqueteCLiente
     const recursos = this.cantDatosMoviles + this.cantTiempoLlamadas;
     
