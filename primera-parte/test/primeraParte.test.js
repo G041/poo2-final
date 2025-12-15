@@ -455,6 +455,30 @@ describe("Testeamos los consumos de internet", ()=>{ //NOTA ya estan ordenandos 
         expect(pepe.conocerPaquetes().length).toEqual(2); //recordar que como este cliente arranco sin paquetes contiene un new PaqueteVacio()
 
     });
+    test("El cliente no tiene ningun paquete valido en curso ni renovable, no puede realizar consumos", ()=>{
+        const fechaInicio = new Date(2001, 8, 11, 9, 40); //new Date(año, mes, día, hora, minuto, segundo, milisegundo)
+        const fechaFin = new Date(2001, 8, 11, 9, 50);
+
+        const consumoI = crearConsumo("internet", fechaInicio, fechaFin, 2.5); //consumo de GB
+        const consumoM = crearConsumo("minutos", fechaInicio, fechaFin, 1000); //consumo de Minutos
+
+        const paquete = crearPaquete(2.5, 1000, 30, 400); //gb-minutos-dias-costo
+
+        const pepe = crearCliente("Juan Alberto", "Pepe", 1111111111); //def paquetes = [new PaqueteVacio()]
+        const cuenta = crearCuenta(1111111111, 400); //suficiente para comprar un paquete solo
+
+        const sistema = crearSistema([paquete], [pepe], [cuenta]);
+
+        sistema.iniciarSesion(pepe);
+        sistema.comprarPaquete(paquete);
+
+        sistema.realizarConsumo(consumoI);  //agotamos gb del paquete
+        sistema.realizarConsumo(consumoM);  //agotamos minutos del paquete
+
+        expect(() => sistema.realizarConsumo(consumoI)).toThrow(new Error("El cliente no tiene ningun paquete valido en curso ni renovable, no puede realizar consumos"));
+        
+
+    });
 
 });
 describe("Testeamos la fecha sobre los paquetes", ()=>{
@@ -491,12 +515,8 @@ describe("Testeamos la fecha sobre los paquetes", ()=>{
 })
 describe("Testeamos el filtro de fecha sobre los consumos", ()=>{ //nota, los consumos de los test anteriores ya estaban ordenados por fecha
     test("Al realizar dos consumos de Internet por parte de un cliente y revisar la lista de consumos, estos estan ordenados correctamente", ()=>{
-        const fechaInicio1 = new Date(2001, 8, 11, 9, 40); //new Date(año, mes, día, hora, minuto, segundo, milisegundo)
-        const fechaFin1 = new Date(2001, 8, 11, 9, 50);
-
-        const fechaInicio2 = new Date(2000, 8, 11, 9, 40);  //cambia el anio, el consumo es mas viejo
-        const fechaFin2 = new Date(2000, 8, 11, 9, 50);     //cambia el anio, el consumo es mas viejo
-
+        const fechaInicio = new Date(2001, 8, 11, 9, 40); //new Date(año, mes, día, hora, minuto, segundo, milisegundo)
+        const fechaFin = new Date(2001, 8, 11, 9, 50);
 
         const paquete = crearPaquete(2.5, 1000, 30, 400); //gb-minutos-dias-costo
         const paqueteCliente = crearPaqueteCliente(crearPaquete(2.5, 1000, 30, 400), 1111111111)
@@ -506,8 +526,8 @@ describe("Testeamos el filtro de fecha sobre los consumos", ()=>{ //nota, los co
 
         const sistema = crearSistema([paquete], [pepe], [cuenta]);
 
-        const consumo1 = crearConsumo("inTeRneT", fechaInicio1, fechaFin1, 0.300);
-        const consumo2 = crearConsumo("inTeRneT", fechaInicio2, fechaFin2, 0.300);
+        const consumo1 = crearConsumo("inTeRneT", fechaInicio, fechaFin, 0.300);
+        const consumo2 = crearConsumo("inTeRneT", fechaInicio, fechaFin, 0.300);
 
         sistema.iniciarSesion(pepe);
         sistema.realizarConsumo(consumo1);

@@ -9,21 +9,23 @@ PrestamoDatos.prototype.tieneSuficiente = function(paquete){
             throw new Error ("Estas intentando prestar una cantidad de datos mayor a la que tenes");
         }
 }
-PrestamoDatos.prototype.ejecutarEntrega = function(paquete){ 
-    paquete.consumirDatos(this.cantidad); 
-    this.establecerFechaVencimiento = paquete.conocerFechaVencimiento();
-    this.objeto = "ENTREGA"; //objeto del prestamo, dar/recibir
-    paquete.almacenarPrestamoFinal(this);
-}
 
+PrestamoDatos.prototype.ejecutarEntrega = function(paqueteClienteEntrega){ 
+    this.objeto = "ENTREGA"; //objeto del prestamo, dar/recibir
+    this.establecerFechaVencimiento(paqueteClienteEntrega.conocerFechaVencimiento());
+
+    paqueteClienteEntrega.consumirDatos(this.cantidad); //-this.cantidad ya que consumir es una resta del atributo datos
+    paqueteClienteEntrega.almacenarPrestamoFinal(this);
+}
 PrestamoDatos.prototype.conocerObjeto = function(){ 
     return this.objeto;
 }
 PrestamoDatos.prototype.ejecutarRecibida = function(paquete){ 
-    paquete.consumirDatos(-this.cantidad); //-this.cantidad ya que consumir es una resta del atributo datos 
-    this.establecerFechaVencimiento = paquete.conocerFechaVencimiento();
     this.objeto = "RECIBIDA"; //objeto del prestamo, dar/recibir
 
+    paquete.establecerFechaVencimiento(this.fechaVencimiento);
+    paquete.consumirDatos(-this.cantidad); //-this.cantidad ya que consumir es una resta del atributo datos
+    
     paquete.almacenarPrestamoFinal(this);
 }
 

@@ -1,18 +1,13 @@
 "use strict";
 const PaqueteCliente = require("./paqueteCliente");
 const FiltroNormal = require("./filtroNormal");
+const PaqueteVacio = require("./paqueteVacio");
 
 
 const Sistema = function(paquetesDisponibles, clientes, cuentas){ //estos van a ser arreglos de objetos y no identificadores, el sistema conoce todo => singleton
     this.paquetes = paquetesDisponibles;
     this.clientes = clientes;
     this.cuentas = cuentas;
-
-    this.fechaActual = null;
-    this.clienteActual = null;          //Cliente
-    this.cuentaClienteActual = null;    //Cuenta
-    this.paquetesClienteActual = null;  //[Paquete]
-    this.paqueteClienteActual = null;   //Paquete
 
     this.depositar = function(valor){
         this.cuentaClienteActual.depositar(valor);
@@ -38,15 +33,19 @@ const Sistema = function(paquetesDisponibles, clientes, cuentas){ //estos van a 
         try{
             this.validarQueNoHayaPaqueteEnCurso(); //si pasa esta linea o tiene un paquete terminado o vacio
             this.validarQueNoHayaRenovacion();
-            throw new Error("El cliente no tiene ningun paquete valido en curso ni renovable, no puede realizar consumos");
         }catch(error){
             if(error.message === "El cliente ya tiene un paquete valido en curso"){
                 this.paqueteVigente.realizarConsumo(consumo);
+                return;
             }else if(error.message === "El cliente tiene un paquete renovable"){
                 this.comprarPaquete(this.paqueteClienteActual);
                 this.realizarConsumo(consumo);
+                return;
             }
+            throw error;
         }
+        throw new Error("El cliente no tiene ningun paquete valido en curso ni renovable, no puede realizar consumos");
+
     }
 
     this.validarQueNoHayaRenovacion = function(){
@@ -69,6 +68,8 @@ const Sistema = function(paquetesDisponibles, clientes, cuentas){ //estos van a 
         this.paquetesClienteActual = cliente.conocerPaquetes();
         this.cuentaClienteActual = this.cuentas.find(cuenta => cuenta.es(this.clienteActual));
 
+        this.paqueteVigente = new PaqueteVacio();
+
         this.paqueteClienteActual = this.paquetesClienteActual.at(-1);
     }
 
@@ -86,10 +87,13 @@ const Sistema = function(paquetesDisponibles, clientes, cuentas){ //estos van a 
     }
 
     this.cerrarSesion = function(){
-        this.clienteActual = null;
-        this.cuentaClienteActual = null;
-        this.paqueteVigente = null;
-        this.paquetesClienteActual = null;
+        this.fechaActual = null;            //Date
+        this.clienteActual = null;          //Cliente
+        this.cuentaClienteActual = null;    //Cuenta
+        this.paquetesClienteActual = null;  //[Paquete]
+        this.paqueteClienteActual = null;   //Paquete
+
+        this.paqueteVigente = new PaqueteVacio();
     }
 
     this.comprarPaquete = function(paquetePedido){

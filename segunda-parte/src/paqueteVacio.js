@@ -4,7 +4,7 @@ const Paquete = require("./paquete");
 const PaqueteVacio = function(){ //null obj pattern
     Paquete.call(this);
 
-    this.renovarAutomaticamente = false; //cambiar para diferir paquete de paquete cliente
+    this.renovarAutomaticamente = false;
 
 };
 

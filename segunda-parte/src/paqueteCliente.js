@@ -17,7 +17,7 @@ PaqueteCliente.prototype = Object.create(Paquete.prototype); //ES NECESARIO ESTO
 
 //SEGUNDA PARTE DEL FINAL
 PaqueteCliente.prototype.entregarPrestamo = function(prestamo){
-    prestamo.ejecutarEntrega(this)
+    prestamo.ejecutarEntrega(this) //esto sera llamado dentro del cliente que quiere otorgar el prestamo
 }
 
 PaqueteCliente.prototype.recibirPrestamo = function(prestamo){
@@ -26,6 +26,9 @@ PaqueteCliente.prototype.recibirPrestamo = function(prestamo){
 
 PaqueteCliente.prototype.conocerFechaVencimiento = function(){
     return this.fechaVencimiento;
+}
+PaqueteCliente.prototype.establecerFechaVencimiento = function(nuevaFechaVencimiento){
+    return this.fechaVencimiento = nuevaFechaVencimiento;
 }
 
 PaqueteCliente.prototype.almacenarPrestamoFinal = function(prestamoFinal){
@@ -64,10 +67,10 @@ PaqueteCliente.prototype.conocerDuenioPaquete = function(){
 }
 
 PaqueteCliente.prototype.es = function(paquete){ 
-    return this.idPaquete === paquete.obtenerIdPaquete();
+    return this === paquete;
 };
 
-PaqueteCliente.prototype.obtenerIdPaquete = function(idPaquete){
+PaqueteCliente.prototype.obtenerIdPaquete = function(){
     return this.idPaquete;
 }
 

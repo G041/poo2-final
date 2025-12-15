@@ -129,8 +129,8 @@ describe("Testeamos los prestamos de datos y/o minutos por parte de los clientes
         expect(fran.conocerPaquetes()[0].obtenerDatos()).toBe(1); //los datos del paquete de fede no se modifican
     });
     test("Al realizar prestamos exitosos entre estos clientes, el prestamos de datos queda guardados de manera clasificada dentro de sus respectivos paquetes", ()=>{
-
         const fechaTest = new Date();
+
         const paqueteFede = crearPaqueteCliente(crearPaquete(2.5,1000,30,400,1), 1111111111, fechaTest) //cantDatosMoviles, cantTiempoLlamadas, duracion, costo, idPaquete = 0, appIlimitada = ""
         const paqueteFran = crearPaqueteCliente(crearPaquete(0,0,30,400,1), 2222222222) 
         
@@ -155,7 +155,7 @@ describe("Testeamos los prestamos de datos y/o minutos por parte de los clientes
         expect(((fran.conocerPaquetes()[0]).conocerPrestamos()[0]).conocerObjeto()).toEqual("RECIBIDA");
     });
 
-    test("Al realizar prestamos exitosos entre estos clientes, el prestamos de Minutos queda guardados de manera clasificada dentro de sus respectivos paquetes", ()=>{
+    test("Al realizar un prestamo exitoso entre clientes, el prestamo de Minutos queda guardados de manera clasificada dentro de sus respectivos paquetes", ()=>{
 
         const fechaTest = new Date();
         const paqueteFede = crearPaqueteCliente(crearPaquete(2.5,1000,30,400,1), 1111111111, fechaTest) //cantDatosMoviles, cantTiempoLlamadas, duracion, costo, idPaquete = 0, appIlimitada = ""
@@ -169,7 +169,7 @@ describe("Testeamos los prestamos de datos y/o minutos por parte de los clientes
 
         const sistema = crearSistema([], [fede, fran], [cuentaFede, cuentaFran]);
 
-        const prestamoMinutos = crearPrestamo("mInUtOs", 1)
+        const prestamoMinutos = crearPrestamo("minutos", 1)
 
         sistema.iniciarSesion(fede);
 
@@ -178,9 +178,71 @@ describe("Testeamos los prestamos de datos y/o minutos por parte de los clientes
         expect((fede.conocerPaquetes()[0]).conocerPrestamos().length).toBe(1);
         expect((fran.conocerPaquetes()[0]).conocerPrestamos().length).toBe(1);
 
-        expect(((fede.conocerPaquetes()[0]).conocerPrestamos()[0]).conocerObjeto()).toEqual("ENTREGA");
-        expect(((fran.conocerPaquetes()[0]).conocerPrestamos()[0]).conocerObjeto()).toEqual("RECIBIDA");
+        expect(((fede.conocerPaquetes()[0]).conocerPrestamos()[0]).conocerObjeto()).toBe("ENTREGA");
+        expect(((fran.conocerPaquetes()[0]).conocerPrestamos()[0]).conocerObjeto()).toBe("RECIBIDA");
 
+    });
+
+    test("Al realizar prestamos exitosos entre clientes, el prestamos de Minutos queda guardados, clasificado y el cliente ahora puede realizar consumos", ()=>{
+        const fechaTest = new Date();
+
+        const paqueteFede = crearPaqueteCliente(crearPaquete(2.5,1000,30,400,1), 1111111111, fechaTest) //(gb, minutos, duracion, costo, id ...), numCliente, fecha)
+        const paqueteFran = crearPaqueteCliente(crearPaquete(0,1,30,400,1), 2222222222, fechaTest) //NOTA: para que pase este test, es necesario que el paquete este vigente
+        
+        const fede = crearCliente("Juan Alberto", "Pepe", 1111111111, [paqueteFede]); 
+        const fran = crearCliente("Juan Alberto", "Pepe", 2222222222, [paqueteFran]); 
+
+        const cuentaFede = crearCuenta(1111111111, 800); 
+        const cuentaFran = crearCuenta(2222222222, 800); 
+
+        const sistema = crearSistema([], [fede, fran], [cuentaFede, cuentaFran]);
+
+        const prestamoDatos = crearPrestamo("dAtOs", 1)
+
+        sistema.iniciarSesion(fran);
+
+        const consumoI = crearConsumo("internet", fechaTest, fechaTest, 1);  //intenta consumir 1 gb
+
+        expect(() => sistema.realizarConsumo(consumoI)).toThrow(new Error ("No tenes suficientes MB para realizar ese consumo"));
+
+        const consumoM = crearConsumo("minutos", fechaTest, fechaTest, 1);  //consumimos los minutos de Fran para que su paquete quede no vigente y pueda recibir prestamo
+        sistema.realizarConsumo(consumoM);
+        sistema.cerrarSesion();
+
+        sistema.iniciarSesion(fede);
+        sistema.realizarPrestamo(fran, prestamoDatos);
+        sistema.cerrarSesion();
+
+        sistema.iniciarSesion(fran);
+        sistema.realizarConsumo(consumoI);
+        expect(sistema.consultarConsumos().length).toBe(2); //el primer consumo fue realizado mas arriba, despues del expect().toThrow();
+
+    });
+
+    test("Al realizar prestamos exitosos entre clientes, el prestamo de Minutos queda guardado y clasificado, y al intentar consumir despues de que vencio no puede", ()=>{
+        const fechaTest = new Date();
+        const diasDelFuturoPasado = new Date(2000, 8, 11, 9, 40); //fecha vieja generica
+
+        const paqueteFede = crearPaqueteCliente(crearPaquete(2.5,1000,30,400,1), 1111111111, diasDelFuturoPasado) //(gb, minutos, duracion, costo, id ...), numCliente, fecha), la fecha de fede es vieja
+        const paqueteFran = crearPaqueteCliente(crearPaquete(0,0,30,400,1), 2222222222, fechaTest) //NOTA: el paquete de fran vence hoy pero...se esta por quedar sin MINUTOS!
+        
+        const fede = crearCliente("Juan Alberto", "Pepe", 1111111111, [paqueteFede]); 
+        const fran = crearCliente("Juan Alberto", "Pepe", 2222222222, [paqueteFran]); 
+
+        const cuentaFede = crearCuenta(1111111111, 800); 
+        const cuentaFran = crearCuenta(2222222222, 800); 
+
+        const sistema = crearSistema([], [fede, fran], [cuentaFede, cuentaFran]);
+
+        const prestamoDatos = crearPrestamo("dAtOs", 1)
+        const consumoI = crearConsumo("internet", fechaTest, fechaTest, 1);  //intenta consumir 1 gb
+
+        sistema.iniciarSesion(fede);
+        sistema.realizarPrestamo(fran, prestamoDatos);
+        sistema.cerrarSesion();
+
+        sistema.iniciarSesion(fran);
+        expect(() => sistema.realizarConsumo(consumoI)).toThrow(new Error("El cliente no tiene ningun paquete valido en curso ni renovable, no puede realizar consumos"));
     });
 
     
