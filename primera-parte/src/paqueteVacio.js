@@ -18,14 +18,15 @@ PaqueteVacio.prototype.activarRenovarAutomaticamente = function(){
 PaqueteVacio.prototype.sosRenovable = function(){
     return this.renovarAutomaticamente;
 }
+PaqueteVacio.prototype.estaVigente = function(){
+    return false
+}
 
 PaqueteVacio.prototype.es = function(paquete){
     return false;
 }
 
 PaqueteVacio.prototype.constructor = PaqueteVacio;
-
-//NOTA: SOLO SE PUEDEN REALIZAR CONSUMOS SOBRE UN PAQUETE CLIENTE YA QUE ES UNA CARACTERISTICA DEL PAQUETE QUE TIENE UN DUENIO
 
 
 module.exports = PaqueteVacio;

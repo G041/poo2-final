@@ -8,18 +8,26 @@ const PaqueteCliente = function(paquetePadre, numCliente, fechaCompra){
     //sino que es un acaracteristica que modifica el cliente una vez que lo adquire
     this.numCliente = numCliente;
     this.renovarAutomaticamente = false; //cambiar para diferir paquete de paquete cliente
-    this.consumos = [];
+    this.consumos = []; 
     this.fechaVencimiento = this.calcularFechaVencimiento(fechaCompra, this.duracion);
-
 };
 
 PaqueteCliente.prototype = Object.create(Paquete.prototype);
 
 PaqueteCliente.prototype.calcularFechaVencimiento = function(fechaCompra, duracionDias) {
-    const nuevaFecha = new Date(fechaCompra); 
-    nuevaFecha.setDate(nuevaFecha.getDate() + duracionDias); 
+    fechaCompra.setDate(fechaCompra.getDate() + duracionDias); 
     
-    return nuevaFecha;
+    return fechaCompra;
+};
+
+PaqueteCliente.prototype.estaVigente = function(){ ///seria logico en breves cambiar esto ya que un paquete padre siempre esta vigente, el que puede variar en cuanto a vigencia es el paqueteCLiente
+    const recursos = this.cantDatosMoviles + this.cantTiempoLlamadas;
+    
+    const fechaActual = new Date();
+
+    const noExpirado = this.fechaVencimiento > fechaActual;
+
+    return (recursos !== 0 && noExpirado);
 };
 
 PaqueteCliente.prototype.activarRenovarAutomaticamente = function(){

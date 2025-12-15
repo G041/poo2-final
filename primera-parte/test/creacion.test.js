@@ -458,17 +458,18 @@ describe("Testeamos los consumos de internet", ()=>{ //NOTA ya estan ordenandos 
 
 });
 describe("Testeamos la fecha sobre los paquetes", ()=>{
-    test("Al crear un paquete con una fecha vieja, se encuentra expirado o no vigente", ()=>{
+    test("Al crear un paquete Cliente con una fecha vieja, se encuentra expirado o no vigente", ()=>{
         const fechaVieja = new Date(2001, 8, 11, 9, 40); //new Date(año, mes, día, hora, minuto, segundo, milisegundo)
-        const paquete = crearPaquete(1,1,30,1,1, fechaVieja) //(cantDatosMoviles, cantTiempoLlamadas, duracion, costo, idPaquete = 0, fechaCompra = new Date()){
+        const paquete = crearPaqueteCliente(crearPaquete(1,1,30,1,1), 1111111111, fechaVieja) //(cantDatosMoviles, cantTiempoLlamadas, duracion, costo, idPaquete = 0, fechaCompra = new Date()){
 
         expect(paquete.estaVigente()).toBe(false)
+        //la propiedad o caracteristica de un paquete de "encontrarse expirado" solo es obtenible por un paquete que le pertenece a un cliente
         console.log(paquete)
     });
 
     test("Al tener un cliente con un paquete expirado que todavia tiene datos, este puede comprar otro nuevo", ()=>{
         const fechaInicioSesion = new Date(2001, 8, 11, 9, 40); //new Date(año, mes, día, hora, minuto, segundo, milisegundo)
-        const paqueteViejo = crearPaquete(2.5, 1000, 30, 400, 1);
+        const paqueteViejo = crearPaqueteCliente(crearPaquete(2.5, 1000, 30, 400, 1),1111111111, fechaInicioSesion);
         const paquetePepe = crearPaqueteCliente(paqueteViejo, 1111111111, fechaInicioSesion);
 
         const paqueteDisponible = crearPaquete(2.5, 1000, 30, 400, 1);
