@@ -28,13 +28,15 @@ const Sistema = function(paquetesDisponibles, clientes, cuentas){ //estos van a 
         this.otorgarPrestamo(paqueteReceptor, prestamo);
     }
 
-    //this.prestarMinutos = function(){} //no la hago ya que el prestamo va a pasar a ser un objeto
-
     this.otorgarPrestamo = function(paqueteReceptor, prestamo){
         const paqueteClienteActual = this.paqueteClienteActual;
 
+        const nuevoPrestamo = Object.create(Object.getPrototypeOf(prestamo));
+        Object.assign(nuevoPrestamo, prestamo);
+        //intente clonar el objeto pero no resulto ya que object.assign() solo copia los metodos de instancia y no toda el prototipo
+        //por lo cual busque y encontre esta manera, a un paquete le pasamos el prestamo clonado por completo y al otro el original de manera que no apuntan al mismo lugar en memoria
         paqueteClienteActual.entregarPrestamo(prestamo);
-        paqueteReceptor.recibirPrestamo(prestamo); //negativo ya que consumir datos es una resta
+        paqueteReceptor.recibirPrestamo(nuevoPrestamo);
     }
 
     this.tengoParaPrestar = function(prestamo){

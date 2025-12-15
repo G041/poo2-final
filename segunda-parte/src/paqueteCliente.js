@@ -10,7 +10,7 @@ const PaqueteCliente = function(paquetePadre, numCliente, fechaCompra){
     this.renovarAutomaticamente = false; //cambiar para diferir paquete de paquete cliente
     this.consumos = []; 
     this.fechaVencimiento = this.calcularFechaVencimiento(fechaCompra, this.duracion);
-    this.prestamos = [];
+    this.prestamos = []; //podria haber hecho prestamo recibido y prestamo entregado como 2 arreglos dentro de cada paquete cliente pero me parece medio lo mismo,
 };
 
 PaqueteCliente.prototype = Object.create(Paquete.prototype); //ES NECESARIO ESTO ?
@@ -18,8 +18,8 @@ PaqueteCliente.prototype = Object.create(Paquete.prototype); //ES NECESARIO ESTO
 //SEGUNDA PARTE DEL FINAL
 PaqueteCliente.prototype.entregarPrestamo = function(prestamo){
     prestamo.ejecutarEntrega(this)
-
 }
+
 PaqueteCliente.prototype.recibirPrestamo = function(prestamo){
     prestamo.ejecutarRecibida(this)
 }
@@ -30,6 +30,10 @@ PaqueteCliente.prototype.conocerFechaVencimiento = function(){
 
 PaqueteCliente.prototype.almacenarPrestamoFinal = function(prestamoFinal){
     this.prestamos.push(prestamoFinal);
+}
+
+PaqueteCliente.prototype.conocerPrestamos = function(){
+    return this.prestamos;
 }
 //SEGUNDA PARTE DEL FINAL
 

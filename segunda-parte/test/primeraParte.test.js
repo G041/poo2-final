@@ -464,7 +464,6 @@ describe("Testeamos la fecha sobre los paquetes", ()=>{
 
         expect(paquete.estaVigente()).toBe(false)
         //la propiedad o caracteristica de un paquete de "encontrarse expirado" solo es obtenible por un paquete que le pertenece a un cliente
-        console.log(paquete)
     });
 
     test("Al tener un cliente con un paquete expirado que todavia tiene datos, este puede comprar otro nuevo", ()=>{

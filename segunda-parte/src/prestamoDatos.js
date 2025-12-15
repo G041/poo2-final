@@ -1,6 +1,6 @@
 "use strict";
 
-const PrestamoDatos = function(cantidad){ //accion sera recibido/otorgado idealmente
+const PrestamoDatos = function(cantidad){ //no necesito mas que esto, cuando el prestamo se ejecuta adquiere identidad, inicialmente solo tengo que conocer el proposito
     this.cantidad = cantidad;
 }
 
@@ -14,23 +14,19 @@ PrestamoDatos.prototype.ejecutarEntrega = function(paquete){
     this.establecerFechaVencimiento = paquete.conocerFechaVencimiento();
     this.objeto = "ENTREGA"; //objeto del prestamo, dar/recibir
     paquete.almacenarPrestamoFinal(this);
-    this.resetear();
 }
 
-
+PrestamoDatos.prototype.conocerObjeto = function(){ 
+    return this.objeto;
+}
 PrestamoDatos.prototype.ejecutarRecibida = function(paquete){ 
     paquete.consumirDatos(-this.cantidad); //-this.cantidad ya que consumir es una resta del atributo datos 
     this.establecerFechaVencimiento = paquete.conocerFechaVencimiento();
     this.objeto = "RECIBIDA"; //objeto del prestamo, dar/recibir
 
     paquete.almacenarPrestamoFinal(this);
-    this.resetear();
 }
 
-PrestamoDatos.prototype.resetear = function(){
-    this.fechaVencimiento = null;
-    this.objeto = null;
-}
 PrestamoDatos.prototype.establecerFechaVencimiento = function(fechaVencimiento){ //no corresponde en la creacion ya que es un atributo que se otorga una vez se realiza el prestamo
     this.fechaVencimiento = fechaVencimiento;
 }

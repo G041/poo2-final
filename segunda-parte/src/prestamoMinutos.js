@@ -13,12 +13,20 @@ PrestamoMinutos.prototype.ejecutarEntrega = function(paquete){
     paquete.consumirMinutos(this.cantidad); 
     this.establecerFechaVencimiento = paquete.conocerFechaVencimiento();
     this.objeto = "ENTREGA"; //objeto del prestamo, dar/recibir
+    
+    paquete.almacenarPrestamoFinal(this);
+}
+
+PrestamoMinutos.prototype.conocerObjeto = function(){ 
+    return this.objeto;
 }
 
 PrestamoMinutos.prototype.ejecutarRecibida = function(paquete){ 
     paquete.consumirMinutos(-this.cantidad); //-this.cantidad ya que consumir es una resta del atributo datos 
     this.establecerFechaVencimiento = paquete.conocerFechaVencimiento();
     this.objeto = "RECIBIDA"; //objeto del prestamo, dar/recibir
+
+    paquete.almacenarPrestamoFinal(this);
 }
 PrestamoMinutos.prototype.establecerFechaVencimiento = function(fechaVencimiento){ //no corresponde en la creacion ya que es un atributo que se otorga una vez se realiza el prestamo
     this.fechaVencimiento = fechaVencimiento;
