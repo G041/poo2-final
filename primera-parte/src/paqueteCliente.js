@@ -1,7 +1,7 @@
 "use strict";
 const Paquete = require("./paquete");
 
-const PaqueteCliente = function(paquetePadre, numCliente){
+const PaqueteCliente = function(paquetePadre, numCliente, fechaCompra){
     Object.assign(this, paquetePadre);    //clonamos todas las propiedades del paquete recibido y agregamos la funcionalidad necesaria que seria la del numero del cliente, asi ahora tenemos una manera de relacion estrictamente un paquete otorgado con el cliente al que fue otorgado y como este modifica la existencia del mismo
 
     //caracteristicas que hace que difiera el paquete del paquete cliente, no es necesario para el paquete modelo que pueden adquirir los clientes conocer todo lo de abajo
@@ -9,6 +9,7 @@ const PaqueteCliente = function(paquetePadre, numCliente){
     this.numCliente = numCliente;
     this.renovarAutomaticamente = false; //cambiar para diferir paquete de paquete cliente
     this.consumos = [];
+    this.fechaVencimiento = this.calcularFechaVencimiento(fechaCompra, this.duracion);
 
 };
 
@@ -20,6 +21,7 @@ PaqueteCliente.prototype.calcularFechaVencimiento = function(fechaCompra, duraci
     
     return nuevaFecha;
 };
+
 PaqueteCliente.prototype.activarRenovarAutomaticamente = function(){
     this.renovarAutomaticamente = true;
 };

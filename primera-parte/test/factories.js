@@ -16,12 +16,12 @@ const crearCliente = function (nombre, apellido, numeroLinea, paquetes = [new Pa
     return new Cliente(nombre, apellido, numeroLinea, paquetes);
 }
 
-const crearPaquete = function (cantDatosMoviles, cantTiempoLlamadas, duracion, costo, idPaquete = 0, fechaCompra = new Date()){
-    return new Paquete(cantDatosMoviles, cantTiempoLlamadas, duracion, costo, idPaquete, fechaCompra);
+const crearPaquete = function (cantDatosMoviles, cantTiempoLlamadas, duracion, costo, idPaquete = 0){
+    return new Paquete(cantDatosMoviles, cantTiempoLlamadas, duracion, costo, idPaquete);
 }
 
-const crearPaqueteCliente = function(paquete, numCliente){
-    return new PaqueteCliente(paquete, numCliente);
+const crearPaqueteCliente = function(paquete, numCliente, fechaCompra = new Date()){
+    return new PaqueteCliente(paquete, numCliente, fechaCompra);
 }
 const crearCuenta = function (numCliente, saldo = 0){
     return new Cuenta(numCliente, saldo);

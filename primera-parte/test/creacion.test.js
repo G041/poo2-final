@@ -161,6 +161,7 @@ describe("Verificamos la compra de paquetes", ()=>{
     test("Al crear un cliente con saldo suficiente y este intenta comprar un paquete, tiene exito y su saldo se modifica", ()=>{ //aca esta fallando por PRIMERA VEZ
         const paqueteVacio = new PaqueteVacio(); //creamos un paquete vacio real para evaluar mas adelante la referencia por memoria en los test, si hubieramos dejado que se instancie por def
         //como new PaqueteVacio en la factory perdiamos la referencia para evaluarlo mas adelante en el expect
+        const fechaCompraPaquete = new Date();
     
         const pepe = crearCliente("Juan Alberto", "Pepe", 1111111111, [paqueteVacio]); //paquetes def = []
         const cuenta = crearCuenta(1111111111, 400); //saldo def = 0
@@ -390,7 +391,7 @@ describe("Testeamos los consumos de internet", ()=>{ //NOTA ya estan ordenandos 
 
     });
 
-    test("Al intentar crear un cliente que compra un paquete y realizar un consumo a un paquete terminado que fue etiquetado como renovable automaticamente, puede realizar el consumo y se descuenta del saldo, el cliente recibe otro paquete de iguales caracteristicas y las propiedades de ambos se modifican segun el consumo", ()=>{
+    test("Al crear un cliente que compra un paquete y realizar un consumo a un paquete terminado que fue etiquetado como renovable automaticamente, puede realizar el consumo y se descuenta del saldo, el cliente recibe otro paquete de iguales caracteristicas y las propiedades de ambos se modifican segun el consumo", ()=>{
         const fechaInicio = new Date(2001, 8, 11, 9, 40); //new Date(año, mes, día, hora, minuto, segundo, milisegundo)
         const fechaFin = new Date(2001, 8, 11, 9, 50);
         const consumoI = crearConsumo("internet", fechaInicio, fechaFin, 2.5); //consumo de 2.5GB
@@ -429,6 +430,7 @@ describe("Testeamos los consumos de internet", ()=>{ //NOTA ya estan ordenandos 
     test("Al intentar realizar un consumo a un paquete terminado que fue etiquetado como renovable automaticamente pero sin saldo, no se compra y los consumos no se realizan", ()=>{
         const fechaInicio = new Date(2001, 8, 11, 9, 40); //new Date(año, mes, día, hora, minuto, segundo, milisegundo)
         const fechaFin = new Date(2001, 8, 11, 9, 50);
+
         const consumoI = crearConsumo("internet", fechaInicio, fechaFin, 2.5); //consumo de GB
         const consumoM = crearConsumo("minutos", fechaInicio, fechaFin, 1000); //consumo de Minutos
 
@@ -465,22 +467,24 @@ describe("Testeamos la fecha sobre los paquetes", ()=>{
     });
 
     test("Al tener un cliente con un paquete expirado que todavia tiene datos, este puede comprar otro nuevo", ()=>{
-        const fechaVieja = new Date(2001, 8, 11, 9, 40); //new Date(año, mes, día, hora, minuto, segundo, milisegundo)
-        const paqueteViejo = crearPaquete(2.5, 1000, 30, 400, 1, fechaVieja);
+        const fechaInicioSesion = new Date(2001, 8, 11, 9, 40); //new Date(año, mes, día, hora, minuto, segundo, milisegundo)
+        const paqueteViejo = crearPaquete(2.5, 1000, 30, 400, 1);
+        const paquetePepe = crearPaqueteCliente(paqueteViejo, 1111111111, fechaInicioSesion);
 
-        const paqueteDisponible = crearPaquete(2.5, 1000, 30, 400);
+        const paqueteDisponible = crearPaquete(2.5, 1000, 30, 400, 1);
 
         const pepe = crearCliente("Juan Alberto", "Pepe", 1111111111, [paqueteViejo]); //paquetes def = []
         const cuenta = crearCuenta(1111111111, 400); //saldo def = 0
         
-        const paquetePepe = crearPaqueteCliente(crearPaquete(2.5, 1000, 30, 400), 1111111111) 
-
         const sistema = crearSistema([paqueteDisponible], [pepe], [cuenta]);
 
-        sistema.iniciarSesion(pepe);
+        sistema.iniciarSesion(pepe, fechaInicioSesion);
+        //aclaramos la fecha de inicio de sesion para asegurarnos de que no se vayan creando nuevos objetos new Date dentro del sistema y 
+        // podamos comparar por una referencia estricta
+
         sistema.comprarPaquete(paqueteDisponible);
 
-        expect(sistema.consultarSaldo()).toBe(0);
+        expect(sistema.consultarSaldo()).toBe(0);  
         expect(pepe.conocerPaquetes()).toStrictEqual([paqueteViejo, paquetePepe]); 
         
     });
@@ -551,9 +555,6 @@ describe("Testeamos el filtro de fecha sobre los consumos", ()=>{ //nota, los co
         sistema.consultarConsumos(filtro);
 
         expect(sistema.consultarConsumos(filtro)).toStrictEqual([consumo4, consumo5, consumo6, consumo7, consumo8]);
-
-
     });
-
 
 })

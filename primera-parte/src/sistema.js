@@ -3,12 +3,12 @@ const PaqueteCliente = require("./paqueteCliente");
 const FiltroNormal = require("./filtroNormal");
 
 
-const Sistema = function(paquetesDisponibles, clientes, cuentas, fechaActual){ //estos van a ser arreglos de objetos y no identificadores, el sistema conoce todo => singleton
+const Sistema = function(paquetesDisponibles, clientes, cuentas){ //estos van a ser arreglos de objetos y no identificadores, el sistema conoce todo => singleton
     this.paquetes = paquetesDisponibles;
     this.clientes = clientes;
     this.cuentas = cuentas;
-    this.fechaActual = fechaActual;
 
+    this.fechaActual = null;
     this.clienteActual = null;          //Cliente
     this.cuentaClienteActual = null;    //Cuenta
     this.paquetesClienteActual = null;  //[Paquete]
@@ -27,15 +27,7 @@ const Sistema = function(paquetesDisponibles, clientes, cuentas, fechaActual){ /
 
         return consumos;
     }
-    /*
-    this.filtrarConsumos = function(consumos, fechaInicio = null, fechaFin = null){ //esto podria ser un objeto filtro a fin de eliminar if pero estoy cansado de este tp
-        if(fechaInicio && fechaFin)
-            this.filtrarPorFecha(fechaInicio, fechaFin)
-        consumos.sort((a, b) => {
-            return (a.obtenerFechaInicio()).getTime() - (b.obtenerFechaInicio()).getTime();
-        });
-    } 
-    */
+    
     this.activarRenovarAutomaticamente = function(){
         this.validarSesionIniciada();
         this.paqueteClienteActual.activarRenovarAutomaticamente();
@@ -67,11 +59,12 @@ const Sistema = function(paquetesDisponibles, clientes, cuentas, fechaActual){ /
         return this.cuentaClienteActual.obtenerSaldo();
     }
 
-    this.iniciarSesion = function(cliente){
+    this.iniciarSesion = function(cliente, fechaActual = new Date()){
         this.existeElCliente(cliente);
         this.existeCuentaCliente(cliente);
 
         //cargamos todas las variabels que nos van a servir
+        this.fechaActual = fechaActual;
         this.clienteActual = cliente;
         this.paquetesClienteActual = cliente.conocerPaquetes();
         this.cuentaClienteActual = this.cuentas.find(cuenta => cuenta.es(this.clienteActual));
@@ -140,7 +133,7 @@ const Sistema = function(paquetesDisponibles, clientes, cuentas, fechaActual){ /
 
     this.otorgarPaquete = function(paqueteEncontrado){
         const numeroCliente = this.clienteActual.obtenerNumero();
-        this.paqueteClienteActual = new PaqueteCliente(paqueteEncontrado, numeroCliente);
+        this.paqueteClienteActual = new PaqueteCliente(paqueteEncontrado, numeroCliente, this.fechaActual);
         this.clienteActual.recibirPaquete(this.paqueteClienteActual); //cuando el cliente pudo comprar un paquete se realiza la asignacion paqueteCliente
     }
 };

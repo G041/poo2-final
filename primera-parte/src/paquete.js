@@ -6,29 +6,29 @@ const Paquete = function(cantDatosMoviles, cantTiempoLlamadas, duracion, costo, 
     this.duracion = duracion;
     this.costo = costo;
     this.idPaquete = idPaquete;
-    this.fechaVencimiento = this.calcularFechaVencimiento(fechaCompra, this.duracion);
+    //this.fechaVencimiento = this.calcularFechaVencimiento(fechaCompra, this.duracion);
 
     if (costo < 0){
         throw new Error("No se puede crear un paquete con costo negativo");
     }
 
-    this.renovarAutomaticamente = false; //cambiar para diferir paquete de paqueteCliente
+    //this.renovarAutomaticamente = false; //cambiar para diferir paquete de paqueteCliente
 
-    this.consumos = []; //ESTAS DOS FUNCIONES HABRIA QUE INTENTAR SACARLAS DE ACA O ALGO PARA QUE EXISTA DIFERENCIA REAL ENTRE UN PAQUETE Y UN PAQ CLIENTE
+    //this.consumos = []; //ESTAS DOS FUNCIONES HABRIA QUE INTENTAR SACARLAS DE ACA O ALGO PARA QUE EXISTA DIFERENCIA REAL ENTRE UN PAQUETE Y UN PAQ CLIENTE
 
 };
     
 Paquete.prototype.es = function(paquete){ 
     return this.idPaquete === paquete.obtenerIdPaquete();
 };
-
+/*
 Paquete.prototype.calcularFechaVencimiento = function(fechaCompra, duracionDias) {
     const nuevaFecha = new Date(fechaCompra); 
     nuevaFecha.setDate(nuevaFecha.getDate() + duracionDias); 
     
     return nuevaFecha;
 };
-
+*/
 Paquete.prototype.obtenerIdPaquete = function(){
     return this.idPaquete;
 }
