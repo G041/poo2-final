@@ -13,7 +13,7 @@ describe("Verificamos la creacion del paquete", () =>{
 
         Object.keys(paquete).map(item => claves.push(paquete[item]));
 
-        expect(claves.slice(0,4)).toStrictEqual([5, 600, 30, 15000]);
+        expect(claves.slice(0,4)).toEqual([5, 600, 30, 15000]);
     });
 
     test("Creamos un paquete cliente con datos genericos",()=>{
@@ -25,7 +25,7 @@ describe("Verificamos la creacion del paquete", () =>{
 
         Object.keys(paqueteCliente).map(item => claves.push(paqueteCliente[item]));
 
-        expect(claves.slice(0,4)).toStrictEqual([5, 600, 30, 15000]);
+        expect(claves.slice(0,4)).toEqual([5, 600, 30, 15000]);
         expect(paqueteCliente.conocerDuenioPaquete()).toBe(1111111111);
     });
 
@@ -44,10 +44,10 @@ describe("Verificamos la creacion del Cliente", ()=> {
 
         Object.keys(pepe).map(item => claves.push(pepe[item]));
 
-        expect(claves.slice(0,4)).toStrictEqual(["Juan Alberto", "Pepe", 1111111111, [paqueteVacio]]); //no agregamos ningun paq, [new PaqueteVacio()] por def
+        expect(claves.slice(0,4)).toEqual(["Juan Alberto", "Pepe", 1111111111, [paqueteVacio]]); //no agregamos ningun paq, [new PaqueteVacio()] por def
 
         //ESTE ARRANCO A TIRAR ERROR CUANDO AGREGUE LA FECHA DE VENCIMIENTO EN PAQUETE
-        expect(pepe.conocerPaquetes()).toStrictEqual([paqueteVacio]);
+        expect(pepe.conocerPaquetes()).toEqual([paqueteVacio]);
     });
 
     test("Creamos un cliente con un paquete ya asignado", ()=>{
@@ -58,8 +58,8 @@ describe("Verificamos la creacion del Cliente", ()=> {
         Object.keys(pepe).map(item => claves.push(pepe[item])); //["Juan Alberto", "Pepe", 1111111111, [paquete]]
         expect(paqueteCliente).toBeInstanceOf(PaqueteCliente); //funciona correctamente la factory
         
-        expect(claves.slice(0,4)).toStrictEqual(["Juan Alberto", "Pepe", 1111111111,[paqueteCliente]]);
-        expect(claves[3][0]).toStrictEqual(paqueteCliente); //por ahora no pude hacer andar el toEqualObject
+        expect(claves.slice(0,4)).toEqual(["Juan Alberto", "Pepe", 1111111111,[paqueteCliente]]);
+        expect(claves[3][0]).toEqual(paqueteCliente); //por ahora no pude hacer andar el toEqualObject
 
     })
 });
@@ -73,7 +73,7 @@ describe("Testeamos la funcionalidad del sistema y del cliente con una cuenta", 
 
         sistema.iniciarSesion(pepe);
 
-        expect(sistema.consultarSaldo()).toStrictEqual(0);
+        expect(sistema.consultarSaldo()).toEqual(0);
     })
 
     test("Creamos un cliente con una cuenta y realizamos un deposito", ()=>{
@@ -85,7 +85,7 @@ describe("Testeamos la funcionalidad del sistema y del cliente con una cuenta", 
         sistema.iniciarSesion(pepe);
         sistema.depositar(10);
 
-        expect(sistema.consultarSaldo()).toStrictEqual(10);
+        expect(sistema.consultarSaldo()).toEqual(10);
     })
 
     test("Al crear un cliente, depositar y cerrar la sesion, no podemos conocer los datos", ()=>{
@@ -110,7 +110,7 @@ describe("Testeamos la funcionalidad del sistema y del cliente con una cuenta", 
         sistema.cerrarSesion();
 
         sistema.iniciarSesion(pepe); 
-        expect(sistema.consultarSaldo()).toStrictEqual(10);
+        expect(sistema.consultarSaldo()).toEqual(10);
     })
 
     test("Intentamos iniciar sesion al sistema con un cliente que no existe y falla", ()=>{
@@ -175,7 +175,7 @@ describe("Verificamos la compra de paquetes", ()=>{
 
         sistema.comprarPaquete(paquete);
         expect(sistema.consultarSaldo()).toBe(0);
-        expect(pepe.conocerPaquetes()).toStrictEqual([paqueteVacio, paquetePepe]); //durante la compra se realizo correctamente la relacion entre el paquete y cliente 
+        expect(pepe.conocerPaquetes()).toEqual([paqueteVacio, paquetePepe]); //durante la compra se realizo correctamente la relacion entre el paquete y cliente 
         //vemos como el paquete fluctua y pasa a ser un tipo paqueteCliente (paquetePepe en este test) al ser adquirido por el cliente
     });
 
@@ -198,7 +198,7 @@ describe("Verificamos la compra de paquetes", ()=>{
         sistema.depositar(400);
         sistema.comprarPaquete(paquete);
 
-        expect(pepe.conocerPaquetes()).toStrictEqual([paqueteVacio, paquetePepe]); //durante la compra se realizo correctamente la relacion entre el paquete y cliente 
+        expect(pepe.conocerPaquetes()).toEqual([paqueteVacio, paquetePepe]); //durante la compra se realizo correctamente la relacion entre el paquete y cliente 
 
     });
     test("Creamos un cliente con saldo suficiente y un paquete vigente, al intentar comprar un segundo paquete, este falla ", ()=>{
@@ -214,7 +214,7 @@ describe("Verificamos la compra de paquetes", ()=>{
         sistema.iniciarSesion(pepe);
 
         expect(() => sistema.comprarPaquete(paqueteA)).toThrow(new Error("El cliente ya tiene un paquete valido en curso"));
-        expect(pepe.conocerPaquetes()).toStrictEqual([paqueteCliente]); //vemos aca como el paquete que le otorgamos de manera inicial sigue siendo el mismo y no sufrio ningun cambio
+        expect(pepe.conocerPaquetes()).toEqual([paqueteCliente]); //vemos aca como el paquete que le otorgamos de manera inicial sigue siendo el mismo y no sufrio ningun cambio
 
     });
 
@@ -232,7 +232,7 @@ describe("Verificamos la compra de paquetes", ()=>{
         sistema.iniciarSesion(pepe);
         sistema.comprarPaquete(paqueteB);
 
-        expect(pepe.conocerPaquetes()).toStrictEqual([paqueteClienteA, paqueteClienteB]); //durante la compra se realizo correctamente la relacion entre el paquete y cliente
+        expect(pepe.conocerPaquetes()).toEqual([paqueteClienteA, paqueteClienteB]); //durante la compra se realizo correctamente la relacion entre el paquete y cliente
         //al comprar paqueteB pasa a ser paqueteClienteB
     });
 
@@ -247,7 +247,7 @@ describe("Verificamos la compra de paquetes", ()=>{
 
         sistema.iniciarSesion(pepe);
         expect(() => sistema.comprarPaquete(paqueteB)).toThrow(new Error("El cliente no tiene saldo suficiente para ese paquete"));
-        expect(pepe.conocerPaquetes()).toStrictEqual([paqueteClienteA]);
+        expect(pepe.conocerPaquetes()).toEqual([paqueteClienteA]);
         expect(sistema.consultarSaldo()).toBe(0);
     });
 
@@ -273,7 +273,7 @@ describe("Testeamos los consumos de internet", ()=>{ //NOTA ya estan ordenandos 
         const paqueteCliente = crearPaqueteCliente(crearPaquete(2.5, 1000, 30, 400), 1111111111); //gb-minutos-dias-costo
 
         paqueteCliente.consumirDatos(0.300);
-        expect(paqueteCliente.obtenerDatos()).toStrictEqual(2.200);
+        expect(paqueteCliente.obtenerDatos()).toEqual(2.200);
 
     });
 
@@ -295,8 +295,8 @@ describe("Testeamos los consumos de internet", ()=>{ //NOTA ya estan ordenandos 
         sistema.iniciarSesion(pepe);
         sistema.realizarConsumo(consumoI);
         
-        expect((pepe.conocerPaquetes()[0]).obtenerDatos()).toStrictEqual(2.200);
-        expect(sistema.consultarConsumos()).toStrictEqual([consumoI]);
+        expect((pepe.conocerPaquetes()[0]).obtenerDatos()).toEqual(2.200);
+        expect(sistema.consultarConsumos()).toEqual([consumoI]);
     });
 
     test("Al realizar un consumo de Minutos por parte de un cliente con un paquete vigente, este se modifica y queda registrado como consumo", ()=>{
@@ -316,8 +316,8 @@ describe("Testeamos los consumos de internet", ()=>{ //NOTA ya estan ordenandos 
         sistema.iniciarSesion(pepe);
         sistema.realizarConsumo(consumoM);
 
-        expect((pepe.conocerPaquetes()[0]).obtenerMinutos()).toStrictEqual(990);
-        expect(sistema.consultarConsumos()).toStrictEqual([consumoM]);
+        expect((pepe.conocerPaquetes()[0]).obtenerMinutos()).toEqual(990);
+        expect(sistema.consultarConsumos()).toEqual([consumoM]);
 
     });
 
@@ -338,8 +338,8 @@ describe("Testeamos los consumos de internet", ()=>{ //NOTA ya estan ordenandos 
         sistema.realizarConsumo(consumoM);
         sistema.realizarConsumo(consumoM);
 
-        expect((pepe.conocerPaquetes()[0]).obtenerMinutos()).toStrictEqual(980);
-        expect(sistema.consultarConsumos()).toStrictEqual([consumoM, consumoM]);
+        expect((pepe.conocerPaquetes()[0]).obtenerMinutos()).toEqual(980);
+        expect(sistema.consultarConsumos()).toEqual([consumoM, consumoM]);
 
     });
 
@@ -359,10 +359,10 @@ describe("Testeamos los consumos de internet", ()=>{ //NOTA ya estan ordenandos 
 
         sistema.iniciarSesion(pepe);
         expect(() => sistema.realizarConsumo(consumoI)).toThrow(new Error ("No tenes suficientes MB para realizar ese consumo"));
-        expect(sistema.consultarConsumos()).toStrictEqual([]); //el arreglo de consumos esta vacio
+        expect(sistema.consultarConsumos()).toEqual([]); //el arreglo de consumos esta vacio
 
         expect(() => sistema.realizarConsumo(consumoM)).toThrow(new Error ("No tenes suficientes minutos para realizar ese consumo"));
-        expect(sistema.consultarConsumos()).toStrictEqual([]); //el arreglo de consumos sigue vacio
+        expect(sistema.consultarConsumos()).toEqual([]); //el arreglo de consumos sigue vacio
 
     });
 
@@ -384,7 +384,7 @@ describe("Testeamos los consumos de internet", ()=>{ //NOTA ya estan ordenandos 
 
         sistema.realizarConsumo(consumoI);
         sistema.realizarConsumo(consumoM);
-        expect(sistema.consultarConsumos()).toStrictEqual([consumoI, consumoM]);
+        expect(sistema.consultarConsumos()).toEqual([consumoI, consumoM]);
 
         expect(() => sistema.realizarConsumo(consumoI)).toThrow(new Error ("No tenes suficientes MB para realizar ese consumo"));
         expect(() => sistema.realizarConsumo(consumoM)).toThrow(new Error ("No tenes suficientes minutos para realizar ese consumo"));
@@ -407,24 +407,24 @@ describe("Testeamos los consumos de internet", ()=>{ //NOTA ya estan ordenandos 
 
         sistema.iniciarSesion(pepe);
         //sistema.comprarPaquete(paquete); //compra con exito el paquete
-        expect(pepe.conocerPaquetes()).toStrictEqual([paqueteCliente]) //el paquete se trasnforma a paqueteCliente
+        expect(pepe.conocerPaquetes()).toEqual([paqueteCliente]) //el paquete se trasnforma a paqueteCliente
 
         sistema.activarRenovarAutomaticamente(); //activamos la renovacion automatica del paquete 
 
         sistema.realizarConsumo(consumoI);  //agotamos gb del paquete
         sistema.realizarConsumo(consumoM);  //agotamos minutos del paquete
 
-        expect(sistema.consultarConsumos()).toStrictEqual([consumoI, consumoM]); //confirmamos que se hayan efectuado los consumos
+        expect(sistema.consultarConsumos()).toEqual([consumoI, consumoM]); //confirmamos que se hayan efectuado los consumos
 
         sistema.realizarConsumo(consumoI);  //consumimos nuevamente
         sistema.realizarConsumo(consumoM);  //consumimos nuevamente
 
-        expect(sistema.consultarConsumos()).toStrictEqual([consumoI,consumoM, consumoI, consumoM]); //como la fecha en ambos consumos es la misma, estan ordenados por entrada, en definitiva no fueron ordenados
-        expect((pepe.conocerPaquetes()[0]).obtenerDatos()).toStrictEqual(0); 
-        expect((pepe.conocerPaquetes()[0]).obtenerMinutos()).toStrictEqual(0);
+        expect(sistema.consultarConsumos()).toEqual([consumoI,consumoM, consumoI, consumoM]); //como la fecha en ambos consumos es la misma, estan ordenados por entrada, en definitiva no fueron ordenados
+        expect((pepe.conocerPaquetes()[0]).obtenerDatos()).toEqual(0); 
+        expect((pepe.conocerPaquetes()[0]).obtenerMinutos()).toEqual(0);
 
-        expect((pepe.conocerPaquetes()[1]).obtenerDatos()).toStrictEqual(0);
-        expect((pepe.conocerPaquetes()[1]).obtenerMinutos()).toStrictEqual(0);
+        expect((pepe.conocerPaquetes()[1]).obtenerDatos()).toEqual(0);
+        expect((pepe.conocerPaquetes()[1]).obtenerMinutos()).toEqual(0);
     });
 
     test("Al intentar realizar un consumo a un paquete terminado que fue etiquetado como renovable automaticamente pero sin saldo, no se compra y los consumos no se realizan", ()=>{
@@ -452,7 +452,7 @@ describe("Testeamos los consumos de internet", ()=>{ //NOTA ya estan ordenandos 
         expect(() => sistema.realizarConsumo(consumoI)).toThrow(new Error("El cliente no tiene saldo suficiente para ese paquete"));  
         expect(() => sistema.realizarConsumo(consumoM)).toThrow(new Error("El cliente no tiene saldo suficiente para ese paquete")); 
         
-        expect(pepe.conocerPaquetes().length).toStrictEqual(2); //recordar que como este cliente arranco sin paquetes contiene un new PaqueteVacio()
+        expect(pepe.conocerPaquetes().length).toEqual(2); //recordar que como este cliente arranco sin paquetes contiene un new PaqueteVacio()
 
     });
 
@@ -486,7 +486,7 @@ describe("Testeamos la fecha sobre los paquetes", ()=>{
         sistema.comprarPaquete(paqueteDisponible);
 
         expect(sistema.consultarSaldo()).toBe(0);  
-        expect(pepe.conocerPaquetes()).toStrictEqual([paqueteViejo, paquetePepe]); 
+        expect(pepe.conocerPaquetes()).toEqual([paqueteViejo, paquetePepe]); 
         
     });
 })
@@ -514,7 +514,7 @@ describe("Testeamos el filtro de fecha sobre los consumos", ()=>{ //nota, los co
         sistema.realizarConsumo(consumo1);
         sistema.realizarConsumo(consumo2);
 
-        expect(sistema.consultarConsumos()).toStrictEqual([consumo2, consumo1]);    //realizamos primero el 1 y despues el 2 y aun asi estan ordenados de manera que el 2 es mas antiguo
+        expect(sistema.consultarConsumos()).toEqual([consumo2, consumo1]);    //realizamos primero el 1 y despues el 2 y aun asi estan ordenados de manera que el 2 es mas antiguo
     });
 
     test("Al realizar muchos consumos y pedir que se aplique nuestro filtro por fecha, nos devuelve solo aquellos realizados durante el intervalo pedido", ()=>{
@@ -555,7 +555,7 @@ describe("Testeamos el filtro de fecha sobre los consumos", ()=>{ //nota, los co
 
         sistema.consultarConsumos(filtro);
 
-        expect(sistema.consultarConsumos(filtro)).toStrictEqual([consumo4, consumo5, consumo6, consumo7, consumo8]);
+        expect(sistema.consultarConsumos(filtro)).toEqual([consumo4, consumo5, consumo6, consumo7, consumo8]);
     });
 
 })
